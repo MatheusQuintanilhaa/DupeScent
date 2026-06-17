@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { IconSparkles } from "@tabler/icons-react";
 
 const GOLD = "#b8912a";
 
@@ -40,7 +41,10 @@ export default function Hero() {
             onMouseLeave={(e) => (e.currentTarget.style.background = GOLD)}
             onClick={() => navigate("/masculinos")}
           >
-            Explorar dupes ↗
+            <span className="inline-flex items-center gap-2">
+              <IconSparkles size={15} strokeWidth={1.6} aria-hidden="true" />
+              Explorar dupes
+            </span>
           </button>
 
           <button

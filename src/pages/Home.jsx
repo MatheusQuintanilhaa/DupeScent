@@ -31,7 +31,7 @@ export default function Home() {
       <Stats />
 
       <div className="px-4 sm:px-6 lg:px-8 pt-10">
-        <SearchBar value={search} onChange={setSearch} onSearch={() => {}} />
+        <SearchBar value={search} onChange={setSearch} />
 
         <Filters onFilterChange={setActiveFilter} />
 
@@ -59,10 +59,8 @@ export default function Home() {
           />
         )}
 
-        {/* ✅ componente no lugar do bloco inline */}
         <Features />
 
-        {/* Tag Cloud */}
         <TagCloud />
       </div>
 
