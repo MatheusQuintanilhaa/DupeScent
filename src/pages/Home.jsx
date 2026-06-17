@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { usePerfumes, useFilteredPerfumes } from "../hooks/usePerfumes";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Stats from "../components/Stats";
@@ -8,120 +8,20 @@ import Filters from "../components/Filters";
 import PerfumeGrid from "../components/PerfumeGrid";
 import Footer from "../components/Footer";
 import PerfumeModal from "../components/PerfumeModal";
-
-const sections = [
-  {
-    label: "Masculinos",
-    items: [
-      {
-        brand: "Creed",
-        name: "Aventus",
-        tags: ["Noite", "Versátil"],
-        notes: "Abacaxi · Amadeirado · Almíscar",
-        score: "9.2",
-        dupe: "Club de Nuit — Armaf",
-      },
-      {
-        brand: "Dior",
-        name: "Sauvage Elixir",
-        tags: ["Noite", "Frio"],
-        notes: "Ambroxan · Especiado · Âmbar",
-        score: "9.0",
-        dupe: "Asad — Lattafa",
-      },
-      {
-        brand: "MFK",
-        name: "Baccarat Rouge 540",
-        tags: ["Noite", "Versátil"],
-        notes: "Âmbar · Jasmim · Cedro",
-        score: "9.2",
-        dupe: "Amber Oud Rouge — Al Haramain",
-      },
-      {
-        brand: "Parfums de Marly",
-        name: "Layton",
-        tags: ["Noite", "Frio"],
-        notes: "Baunilha · Maçã · Patchouli",
-        score: "9.1",
-        dupe: "Detour Noir — Al Haramain",
-      },
-    ],
-  },
-  {
-    label: "Femininos",
-    items: [
-      {
-        brand: "Maison Francis Kurkdjian",
-        name: "Baccarat Rouge 540 Extrait",
-        tags: ["Noite", "Versátil"],
-        notes: "Âmbar · Safran · Jasmim",
-        score: "9.3",
-        dupe: "Amber Oud Rouge — Al Haramain",
-      },
-      {
-        brand: "Yves Saint Laurent",
-        name: "Libre EDP",
-        tags: ["Noite", "Versátil"],
-        notes: "Baunilha · Lavanda · Floral",
-        score: "9.0",
-        dupe: "Tharwah Gold — Lattafa",
-      },
-      {
-        brand: "Kilian",
-        name: "Angels Share",
-        tags: ["Noite", "Frio"],
-        notes: "Conhaque · Baunilha · Canela",
-        score: "9.2",
-        dupe: "Sharaf Blend — Zimaya",
-      },
-      {
-        brand: "Carolina Herrera",
-        name: "Good Girl",
-        tags: ["Noite", "Frio"],
-        notes: "Doce · Tuberosa · Tonka",
-        score: "9.0",
-        dupe: "Very Velvet Rouge — Maison Alhambra",
-      },
-    ],
-  },
-];
+import Features from "../components/Features";
+import TagCloud from "../components/TagCloud";
 
 export default function Home() {
   const [activeFilter, setActiveFilter] = useState("Todos");
   const [selectedPerfume, setSelectedPerfume] = useState(null);
   const [search, setSearch] = useState("");
 
-  // 🔥 FILTRO FUNCIONANDO
-  const filteredSections = sections.map((section) => {
-    let filteredItems = section.items;
+  const { masculinos, femininos, loading, error } = usePerfumes();
 
-    // filtro por tipo
-    if (activeFilter === "Masculinos") {
-      if (section.label !== "Masculinos") return { ...section, items: [] };
-    }
-
-    if (activeFilter === "Femininos") {
-      if (section.label !== "Femininos") return { ...section, items: [] };
-    }
-
-    // filtro por tags
-    if (!["Todos", "Masculinos", "Femininos"].includes(activeFilter)) {
-      filteredItems = filteredItems.filter((item) =>
-        item.tags.includes(activeFilter),
-      );
-    }
-
-    // 🔥 BUSCA POR NOME
-    if (search.trim() !== "") {
-      filteredItems = filteredItems.filter((item) =>
-        item.name.toLowerCase().includes(search.toLowerCase()),
-      );
-    }
-
-    return {
-      ...section,
-      items: filteredItems,
-    };
+  const sections = useFilteredPerfumes(masculinos, femininos, {
+    search,
+    filter: activeFilter,
+    limit: 6,
   });
 
   return (
@@ -130,19 +30,42 @@ export default function Home() {
       <Hero />
       <Stats />
 
-      {/* 🔥 CONTAINER PROFISSIONAL */}
       <div className="px-4 sm:px-6 lg:px-8 pt-10">
-        <SearchBar value={search} onChange={setSearch} />
+        <SearchBar value={search} onChange={setSearch} onSearch={() => {}} />
 
-        {/* 🔥 FILTROS FUNCIONANDO */}
         <Filters onFilterChange={setActiveFilter} />
 
-        {/* 🔥 GRID DINÂMICO */}
-        <PerfumeGrid
-          sections={filteredSections}
-          onCardClick={(item) => setSelectedPerfume(item)}
-        />
+        {loading && (
+          <div className="flex items-center gap-3 py-20 justify-center">
+            <div className="w-4 h-4 border border-gray-200 border-t-yellow-600 rounded-full animate-spin" />
+            <span className="text-[11px] tracking-[0.2em] uppercase text-gray-400">
+              Carregando fragrâncias...
+            </span>
+          </div>
+        )}
+
+        {error && (
+          <div className="py-10 text-center">
+            <p className="text-[11px] tracking-[0.2em] uppercase text-red-400">
+              Erro ao carregar dados — {error}
+            </p>
+          </div>
+        )}
+
+        {!loading && !error && (
+          <PerfumeGrid
+            sections={sections}
+            onCardClick={(item) => setSelectedPerfume(item)}
+          />
+        )}
+
+        {/* ✅ componente no lugar do bloco inline */}
+        <Features />
+
+        {/* Tag Cloud */}
+        <TagCloud />
       </div>
+
       {selectedPerfume && (
         <PerfumeModal
           item={selectedPerfume}
