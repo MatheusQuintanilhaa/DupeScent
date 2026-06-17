@@ -48,9 +48,9 @@ export default function PerfumeGrid({ sections = [], onCardClick }) {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-10">
-            {section.items.map((item) => (
+            {section.items.map((item, index) => (
               <Card
-                key={item.name}
+                key={`${item.name}-${item.brand}-${index}`}
                 item={item}
                 onClick={() => onCardClick?.(item)}
               />

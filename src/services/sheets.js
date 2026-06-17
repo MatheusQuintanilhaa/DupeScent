@@ -8,7 +8,8 @@ const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 const BASE_URL = "https://sheets.googleapis.com/v4/spreadsheets";
 
 async function fetchSheet(sheetName) {
-  const url = `${BASE_URL}/${SHEET_ID}/values/${encodeURIComponent(sheetName)}?key=${API_KEY}`;
+  const range = `${sheetName}!A1:Z1000`;
+  const url = `${BASE_URL}/${SHEET_ID}/values/${encodeURIComponent(range)}?key=${API_KEY}`;
   const res = await fetch(url);
   if (!res.ok)
     throw new Error(`Erro ao buscar aba ${sheetName}: ${res.status}`);
