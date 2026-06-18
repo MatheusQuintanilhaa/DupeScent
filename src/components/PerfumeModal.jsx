@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const GOLD = "#b8912a";
 
@@ -64,7 +65,7 @@ function RadarChart({ radar }) {
     <div className="space-y-2">
       {labels.map(({ key, label }) => (
         <div key={key} className="flex items-center gap-3">
-          <span className="text-[9px] tracking-[0.1em] uppercase text-gray-500 w-20 shrink-0">
+          <span className="text-[9px] tracking-[0.1em] uppercase text-gray-400 w-20 shrink-0">
             {label}
           </span>
           <div className="flex-1 h-px bg-gray-100 relative">
@@ -76,7 +77,7 @@ function RadarChart({ radar }) {
               }}
             />
           </div>
-          <span className="text-[10px] text-gray-500 w-3">{radar[key]}</span>
+          <span className="text-[10px] text-gray-400 w-3">{radar[key]}</span>
         </div>
       ))}
     </div>
@@ -119,7 +120,7 @@ export default function PerfumeModal({ item, onClose }) {
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-start justify-between z-10">
           <div>
-            <p className="text-[9px] tracking-[0.28em] uppercase text-gray-500 mb-1">
+            <p className="text-[9px] tracking-[0.28em] uppercase text-gray-400 mb-1">
               {item.brand}
             </p>
             <h2
@@ -130,7 +131,7 @@ export default function PerfumeModal({ item, onClose }) {
             </h2>
           </div>
           <button
-            className="text-gray-400 hover:text-gray-600 transition-colors mt-1 text-lg leading-none"
+            className="text-gray-300 hover:text-gray-600 transition-colors mt-1 text-lg leading-none"
             onClick={onClose}
           >
             ✕
@@ -144,34 +145,69 @@ export default function PerfumeModal({ item, onClose }) {
               {item.tags.map((t) => (
                 <span
                   key={t}
-                  className="text-[9px] tracking-[0.12em] uppercase px-2 py-1 border border-gray-200 text-gray-500"
+                  className="text-[9px] tracking-[0.12em] uppercase px-2 py-1 border border-gray-100 text-gray-400"
                 >
                   {t}
                 </span>
               ))}
             </div>
-            <p className="text-[12px] italic text-gray-500">{item.notes}</p>
+            <p className="text-[12px] italic text-gray-400">{item.notes}</p>
           </div>
 
           {/* Pirâmide olfativa */}
           {item.piramide && (
             <div>
-              <p className="text-[9px] tracking-[0.25em] uppercase text-gray-400 mb-3">
-                Pirâmide olfativa
-              </p>
-              <div className="space-y-2">
+              <div className="flex items-baseline justify-between mb-3">
+                <p className="text-[9px] tracking-[0.25em] uppercase text-gray-500">
+                  Pirâmide olfativa
+                </p>
+                <Link
+                  to="/guia#piramide"
+                  className="text-[9px] tracking-[0.1em] uppercase text-gray-300 hover:text-yellow-700 transition-colors"
+                >
+                  O que é isso? ↗
+                </Link>
+              </div>
+              <div className="space-y-3">
                 {[
-                  { label: "Topo", value: item.piramide.topo },
-                  { label: "Coração", value: item.piramide.coracao },
-                  { label: "Fundo", value: item.piramide.fundo },
+                  {
+                    label: "Topo",
+                    sub: "5–20 min",
+                    color: "#b8912a",
+                    value: item.piramide.topo,
+                  },
+                  {
+                    label: "Coração",
+                    sub: "1–4 horas",
+                    color: "#8a6d8f",
+                    value: item.piramide.coracao,
+                  },
+                  {
+                    label: "Fundo",
+                    sub: "6h ou mais",
+                    color: "#5f5e5a",
+                    value: item.piramide.fundo,
+                  },
                 ].map(
-                  ({ label, value }) =>
+                  ({ label, sub, color, value }) =>
                     value && (
-                      <div key={label} className="flex gap-3">
-                        <span className="text-[9px] tracking-[0.1em] uppercase text-gray-400 w-14 shrink-0 pt-0.5">
-                          {label}
-                        </span>
-                        <span className="text-[12px] text-gray-600">
+                      <div
+                        key={label}
+                        className="pl-3"
+                        style={{ borderLeft: `2px solid ${color}` }}
+                      >
+                        <div className="flex items-baseline gap-1.5 mb-0.5">
+                          <span
+                            className="text-[9px] tracking-[0.15em] uppercase font-medium"
+                            style={{ color }}
+                          >
+                            {label}
+                          </span>
+                          <span className="text-[9px] text-gray-400">
+                            · {sub}
+                          </span>
+                        </div>
+                        <span className="text-[12px] text-gray-700">
                           {value}
                         </span>
                       </div>
@@ -184,7 +220,7 @@ export default function PerfumeModal({ item, onClose }) {
           {/* Radar olfativo */}
           {item.radar && (
             <div>
-              <p className="text-[9px] tracking-[0.25em] uppercase text-gray-400 mb-3">
+              <p className="text-[9px] tracking-[0.25em] uppercase text-gray-300 mb-3">
                 Perfil olfativo
               </p>
               <RadarChart radar={item.radar} />
@@ -194,7 +230,7 @@ export default function PerfumeModal({ item, onClose }) {
           {/* Separador */}
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-gray-100" />
-            <span className="text-[9px] tracking-[0.25em] uppercase text-gray-400">
+            <span className="text-[9px] tracking-[0.25em] uppercase text-gray-300">
               Melhores dupes
             </span>
             <div className="flex-1 h-px bg-gray-100" />
@@ -222,7 +258,7 @@ export default function PerfumeModal({ item, onClose }) {
                     </div>
                     {preco && (
                       <div className="text-right shrink-0 ml-4">
-                        <p className="text-[9px] tracking-[0.1em] uppercase text-gray-400 mb-0.5">
+                        <p className="text-[9px] tracking-[0.1em] uppercase text-gray-300 mb-0.5">
                           Média
                         </p>
                         <p
@@ -244,7 +280,7 @@ export default function PerfumeModal({ item, onClose }) {
           </div>
 
           {/* Aviso preço */}
-          <p className="text-[10px] text-gray-400 leading-relaxed border-t border-gray-50 pt-4">
+          <p className="text-[10px] text-gray-300 leading-relaxed border-t border-gray-50 pt-4">
             * Os preços são médias baseadas no mercado brasileiro e podem variar
             conforme o vendedor, promoções e região. Consulte sempre o valor
             atual antes de comprar.

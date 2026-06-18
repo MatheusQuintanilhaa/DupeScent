@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SEO from "../components/SEO";
 import { usePerfumes, useFilteredPerfumes } from "../hooks/usePerfumes";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
@@ -26,6 +27,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
+      <SEO
+        title="Início"
+        description="Encontre o dupe ideal para mais de 100 perfumes importados — com score de similaridade, pirâmide olfativa e preços médios de mercado."
+        path="/"
+      />
       <Navbar />
       <Hero />
       <Stats />
