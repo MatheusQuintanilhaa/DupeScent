@@ -6,10 +6,10 @@ import Card from "../components/Card";
 import SearchBar from "../components/SearchBar";
 import Filters from "../components/Filters";
 import PerfumeModal from "../components/PerfumeModal";
+import SEO from "../components/SEO";
 import { usePerfumes } from "../hooks/usePerfumes";
 
 const GOLD = "#b8912a";
-
 const ocasiaoFilters = ["Todos", "Noite", "Dia", "Trabalho", "Encontro"];
 
 function Section({ title, items, onCardClick }) {
@@ -44,40 +44,40 @@ export default function BuscaPage() {
   const [search, setSearch] = useState(queryParam || familiaParam);
   const [activeFilter, setActiveFilter] = useState("Todos");
   const [selectedPerfume, setSelectedPerfume] = useState(null);
-
   const { masculinos, femininos, loading, error } = usePerfumes();
 
-  // atualiza a URL ao buscar
   useEffect(() => {
-    if (search.trim()) {
-      setSearchParams({ q: search });
-    }
+    if (search.trim()) setSearchParams({ q: search });
   }, [search]);
 
-  const applyFilters = (items) => {
-    return items.filter((item) => {
+  const applyFilters = (items) =>
+    items.filter((item) => {
       const matchSearch =
         search.trim() === "" ||
         item.name.toLowerCase().includes(search.toLowerCase()) ||
         item.brand.toLowerCase().includes(search.toLowerCase()) ||
         item.notes?.toLowerCase().includes(search.toLowerCase());
-
       const matchFilter =
         activeFilter === "Todos" || item.tags.includes(activeFilter);
-
       return matchSearch && matchFilter;
     });
-  };
 
   const mascFiltrados = applyFilters(masculinos);
   const femFiltrados = applyFilters(femininos);
   const total = mascFiltrados.length + femFiltrados.length;
 
+  const seoTitle = familiaParam
+    ? `Família ${familiaParam}`
+    : `Busca por "${search}"`;
+  const seoDesc = familiaParam
+    ? `Perfumes da família olfativa ${familiaParam} — masculinos e femininos com dupes avaliados.`
+    : `Resultados para "${search}" no catálogo DupeScent.`;
+
   return (
     <div className="min-h-screen bg-white text-gray-900">
+      <SEO title={seoTitle} description={seoDesc} path="/busca" />
       <Navbar />
 
-      {/* Header */}
       <div className="px-6 sm:px-8 pt-12 pb-8 border-b border-gray-100">
         <div className="flex items-center gap-2.5 mb-4">
           <div className="w-6 h-px" style={{ background: GOLD }} />
@@ -110,7 +110,6 @@ export default function BuscaPage() {
 
       <div className="px-4 sm:px-6 lg:px-8 pt-8">
         <SearchBar value={search} onChange={setSearch} />
-
         <Filters filters={ocasiaoFilters} onFilterChange={setActiveFilter} />
 
         {loading && (
@@ -119,14 +118,6 @@ export default function BuscaPage() {
             <span className="text-[11px] tracking-[0.2em] uppercase text-gray-400">
               Carregando fragrâncias...
             </span>
-          </div>
-        )}
-
-        {error && (
-          <div className="py-10 text-center">
-            <p className="text-[11px] tracking-[0.2em] uppercase text-red-400">
-              Erro ao carregar dados — {error}
-            </p>
           </div>
         )}
 
@@ -166,7 +157,6 @@ export default function BuscaPage() {
           onClose={() => setSelectedPerfume(null)}
         />
       )}
-
       <Footer />
     </div>
   );

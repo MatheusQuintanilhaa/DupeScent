@@ -1,6 +1,3 @@
-// pages/PerfumesPage.jsx
-// Página reutilizável para Masculinos e Femininos
-
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -8,17 +5,16 @@ import Card from "../components/Card";
 import SearchBar from "../components/SearchBar";
 import Filters from "../components/Filters";
 import PerfumeModal from "../components/PerfumeModal";
+import SEO from "../components/SEO";
 import { usePerfumes } from "../hooks/usePerfumes";
 
 const GOLD = "#b8912a";
-
 const ocasiaoFilters = ["Todos", "Noite", "Dia", "Trabalho", "Encontro"];
 
 export default function PerfumesPage({ genero }) {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("Todos");
   const [selectedPerfume, setSelectedPerfume] = useState(null);
-
   const { masculinos, femininos, loading, error } = usePerfumes();
 
   const allItems = genero === "Masculinos" ? masculinos : femininos;
@@ -28,18 +24,22 @@ export default function PerfumesPage({ genero }) {
       search.trim() === "" ||
       item.name.toLowerCase().includes(search.toLowerCase()) ||
       item.brand.toLowerCase().includes(search.toLowerCase());
-
     const matchFilter =
       activeFilter === "Todos" || item.tags.includes(activeFilter);
-
     return matchSearch && matchFilter;
   });
 
+  const path = genero === "Masculinos" ? "/masculinos" : "/femininos";
+  const desc =
+    genero === "Masculinos"
+      ? "Explore dupes de perfumes masculinos com score de similaridade, pirâmide olfativa e preços médios de mercado."
+      : "Explore dupes de perfumes femininos com score de similaridade, pirâmide olfativa e preços médios de mercado.";
+
   return (
     <div className="min-h-screen bg-white text-gray-900">
+      <SEO title={genero} description={desc} path={path} />
       <Navbar />
 
-      {/* Header da página */}
       <div className="px-6 sm:px-8 pt-12 pb-8 border-b border-gray-100">
         <div className="flex items-center gap-2.5 mb-4">
           <div className="w-6 h-px" style={{ background: GOLD }} />
@@ -62,8 +62,7 @@ export default function PerfumesPage({ genero }) {
       </div>
 
       <div className="px-4 sm:px-6 lg:px-8 pt-8">
-        <SearchBar value={search} onChange={setSearch} onSearch={() => {}} />
-
+        <SearchBar value={search} onChange={setSearch} />
         <Filters filters={ocasiaoFilters} onFilterChange={setActiveFilter} />
 
         {loading && (
@@ -95,7 +94,7 @@ export default function PerfumesPage({ genero }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-10">
             {filtered.map((item) => (
               <Card
-                key={item.name}
+                key={`${item.brand}-${item.name}`}
                 item={item}
                 onClick={() => setSelectedPerfume(item)}
               />
@@ -110,7 +109,6 @@ export default function PerfumesPage({ genero }) {
           onClose={() => setSelectedPerfume(null)}
         />
       )}
-
       <Footer />
     </div>
   );

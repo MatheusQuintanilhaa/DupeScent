@@ -1,5 +1,6 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import SEO from "../components/SEO";
 
 const GOLD = "#b8912a";
 
@@ -43,9 +44,13 @@ const familias = [
 export default function GuiaPage() {
   return (
     <div className="min-h-screen bg-white text-gray-900">
+      <SEO
+        title="Guia de perfumaria"
+        description="Entenda o score de similaridade, pirâmide olfativa, famílias olfativas e como escolher um dupe com confiança."
+        path="/guia"
+      />
       <Navbar />
 
-      {/* Header */}
       <div className="px-6 sm:px-8 pt-12 pb-8 border-b border-gray-100">
         <div className="flex items-center gap-2.5 mb-4">
           <div className="w-6 h-px" style={{ background: GOLD }} />
@@ -68,7 +73,6 @@ export default function GuiaPage() {
       </div>
 
       <div className="px-6 sm:px-8 max-w-3xl py-10 space-y-16">
-        {/* Score de similaridade */}
         <section id="score">
           <h2
             className="text-[24px] font-light mb-4"
@@ -83,46 +87,39 @@ export default function GuiaPage() {
             testou ambos.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="border border-gray-100 p-4">
-              <p
-                className="text-[22px] font-light"
-                style={{
-                  color: GOLD,
-                  fontFamily: "'Cormorant Garamond', Georgia, serif",
-                }}
-              >
-                9.0+
-              </p>
-              <p className="text-[11px] text-gray-500 mt-1">
-                Semelhança excepcional — quase indistinguível
-              </p>
-            </div>
-            <div className="border border-gray-100 p-4">
-              <p
-                className="text-[22px] font-light text-gray-400"
-                style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-              >
-                8.0–8.9
-              </p>
-              <p className="text-[11px] text-gray-500 mt-1">
-                Muito próximo, pequenas diferenças sutis
-              </p>
-            </div>
-            <div className="border border-gray-100 p-4">
-              <p
-                className="text-[22px] font-light text-gray-400"
-                style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-              >
-                7.0–7.9
-              </p>
-              <p className="text-[11px] text-gray-500 mt-1">
-                Inspirado no original, com identidade própria
-              </p>
-            </div>
+            {[
+              {
+                score: "9.0+",
+                desc: "Semelhança excepcional — quase indistinguível",
+                color: GOLD,
+              },
+              {
+                score: "8.0–8.9",
+                desc: "Muito próximo, pequenas diferenças sutis",
+                color: "#9ca3af",
+              },
+              {
+                score: "7.0–7.9",
+                desc: "Inspirado no original, com identidade própria",
+                color: "#9ca3af",
+              },
+            ].map((s) => (
+              <div key={s.score} className="border border-gray-100 p-4">
+                <p
+                  className="text-[22px] font-light"
+                  style={{
+                    color: s.color,
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                  }}
+                >
+                  {s.score}
+                </p>
+                <p className="text-[11px] text-gray-500 mt-1">{s.desc}</p>
+              </div>
+            ))}
           </div>
         </section>
 
-        {/* Pirâmide olfativa */}
         <section id="piramide">
           <h2
             className="text-[24px] font-light mb-4"
@@ -185,7 +182,6 @@ export default function GuiaPage() {
           </p>
         </section>
 
-        {/* Famílias olfativas */}
         <section id="familias">
           <h2
             className="text-[24px] font-light mb-4"
@@ -212,7 +208,6 @@ export default function GuiaPage() {
           </div>
         </section>
 
-        {/* Radar olfativo */}
         <section id="radar">
           <h2
             className="text-[24px] font-light mb-4"
@@ -228,7 +223,6 @@ export default function GuiaPage() {
           </p>
         </section>
 
-        {/* Preços */}
         <section id="precos">
           <h2
             className="text-[24px] font-light mb-4"
@@ -245,7 +239,6 @@ export default function GuiaPage() {
           </p>
         </section>
       </div>
-
       <Footer />
     </div>
   );

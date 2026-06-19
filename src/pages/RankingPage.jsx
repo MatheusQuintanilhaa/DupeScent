@@ -3,10 +3,10 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Card from "../components/Card";
 import PerfumeModal from "../components/PerfumeModal";
+import SEO from "../components/SEO";
 import { usePerfumes } from "../hooks/usePerfumes";
 
 const GOLD = "#b8912a";
-
 const genderFilters = ["Todos", "Masculinos", "Femininos"];
 
 export default function RankingPage() {
@@ -25,6 +25,11 @@ export default function RankingPage() {
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
+      <SEO
+        title="Ranking"
+        description="Os melhores dupes de perfume ordenados por score de similaridade — descubra as combinações mais fiéis ao original."
+        path="/ranking"
+      />
       <Navbar />
 
       <div className="px-6 sm:px-8 pt-12 pb-8 border-b border-gray-100">
@@ -44,8 +49,7 @@ export default function RankingPage() {
           Ranking de <em style={{ color: GOLD }}>similaridade</em>
         </h1>
         <p className="text-sm font-light text-gray-400 max-w-md">
-          As combinações original → dupe com maior score de fidelidade olfativa,
-          segundo nossa curadoria.
+          As combinações original → dupe com maior score de fidelidade olfativa.
         </p>
       </div>
 
@@ -112,7 +116,6 @@ export default function RankingPage() {
           onClose={() => setSelectedPerfume(null)}
         />
       )}
-
       <Footer />
     </div>
   );
