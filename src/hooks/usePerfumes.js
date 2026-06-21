@@ -1,25 +1,27 @@
-// hooks/usePerfumes.js
-
-import { useState, useEffect, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { fetchAllPerfumes, toCardFormat } from "../services/sheets";
 
+async function fetchPerfumes() {
+  const { masculinos, femininos } = await fetchAllPerfumes();
+  return {
+    masculinos: masculinos.map(toCardFormat),
+    femininos: femininos.map(toCardFormat),
+  };
+}
+
 export function usePerfumes() {
-  const [masculinos, setMasculinos] = useState([]);
-  const [femininos, setFemininos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["perfumes"],
+    queryFn: fetchPerfumes,
+  });
 
-  useEffect(() => {
-    fetchAllPerfumes()
-      .then(({ masculinos, femininos }) => {
-        setMasculinos(masculinos.map(toCardFormat));
-        setFemininos(femininos.map(toCardFormat));
-      })
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, []);
-
-  return { masculinos, femininos, loading, error };
+  return {
+    masculinos: data?.masculinos || [],
+    femininos: data?.femininos || [],
+    loading: isLoading,
+    error: error?.message || null,
+  };
 }
 
 export function useFilteredPerfumes(
@@ -36,14 +38,15 @@ export function useFilteredPerfumes(
       }
 
       if (search.trim()) {
+        const q = search.toLowerCase();
         result = result.filter(
           (item) =>
-            item.name.toLowerCase().includes(search.toLowerCase()) ||
-            item.brand.toLowerCase().includes(search.toLowerCase()),
+            item.name.toLowerCase().includes(q) ||
+            item.brand.toLowerCase().includes(q) ||
+            item.notes?.toLowerCase().includes(q),
         );
       }
 
-      // limita a quantidade se definido (ex: 6 na home)
       if (limit) result = result.slice(0, limit);
 
       return result;

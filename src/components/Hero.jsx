@@ -7,7 +7,7 @@ export default function Hero() {
   const navigate = useNavigate();
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-10 sm:pb-12 border-b border-gray-100">
+    <div className="px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-10 sm:pb-12 border-b border-gray-100 dark:border-gray-800 dark:border-gray-800 dark:border-gray-800 dark:border-gray-800">
       <div className="max-w-full sm:max-w-xl">
         <div className="flex items-center gap-2.5 mb-5 sm:mb-6">
           <div className="w-6 h-px" style={{ background: GOLD }} />
@@ -20,7 +20,7 @@ export default function Hero() {
         </div>
 
         <h1
-          className="text-[30px] sm:text-[40px] lg:text-[46px] font-light leading-[1.1] mb-4 tracking-tight"
+          className="text-[30px] sm:text-[40px] lg:text-[46px] font-light leading-[1.1] mb-4 tracking-tight text-gray-900 dark:text-gray-100"
           style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
         >
           O luxo tem um
@@ -35,20 +35,18 @@ export default function Hero() {
 
         <div className="flex flex-col sm:flex-row gap-3">
           <button
-            className="px-7 py-3 text-[11px] tracking-[0.18em] uppercase font-medium text-white transition-colors"
+            className="inline-flex items-center justify-center gap-2 px-7 py-3 text-[11px] tracking-[0.18em] uppercase font-medium text-white transition-colors"
             style={{ background: GOLD }}
             onMouseEnter={(e) => (e.currentTarget.style.background = "#a07c22")}
             onMouseLeave={(e) => (e.currentTarget.style.background = GOLD)}
             onClick={() => navigate("/masculinos")}
           >
-            <span className="inline-flex items-center gap-2">
-              <IconSparkles size={15} strokeWidth={1.6} aria-hidden="true" />
-              Explorar dupes
-            </span>
+            <IconSparkles size={15} strokeWidth={1.6} aria-hidden="true" />
+            Explorar dupes
           </button>
 
           <button
-            className="px-7 py-3 text-[11px] tracking-[0.18em] uppercase text-gray-500 border border-gray-200 hover:border-gray-400 hover:text-gray-900 transition-colors"
+            className="px-7 py-3 text-[11px] tracking-[0.18em] uppercase text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
             onClick={() => {
               document
                 .getElementById("features")

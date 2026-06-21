@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const GOLD = "#b8912a";
 
@@ -22,9 +22,9 @@ export default function SearchBar({ value, onChange }) {
       <p className="text-[10px] tracking-[0.25em] uppercase text-gray-500 mb-2.5">
         Buscar perfume original
       </p>
-      <div className="flex border border-gray-200 focus-within:border-yellow-600 transition-colors">
+      <div className="flex border border-gray-200 dark:border-gray-700 focus-within:border-yellow-600 dark:bg-[#1a1a1a] transition-colors">
         <input
-          className="flex-1 bg-transparent border-none outline-none px-4 py-3.5 text-[13px] text-gray-900 placeholder-gray-300 tracking-wide"
+          className="flex-1 bg-transparent border-none outline-none px-4 py-3.5 text-[13px] text-gray-900 dark:text-gray-100 placeholder-gray-300 dark:placeholder-gray-600 tracking-wide"
           placeholder="Ex: Aventus, Baccarat Rouge 540, Good Girl…"
           value={local}
           onChange={(e) => setLocal(e.target.value)}

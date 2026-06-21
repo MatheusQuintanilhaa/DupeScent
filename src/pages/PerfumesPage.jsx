@@ -5,7 +5,10 @@ import Card from "../components/Card";
 import SearchBar from "../components/SearchBar";
 import Filters from "../components/Filters";
 import PerfumeModal from "../components/PerfumeModal";
+import CardSkeleton from "../components/CardSkeleton";
 import SEO from "../components/SEO";
+import PageTransition from "../components/PageTransition";
+import PriceFilter, { precoFilters, getPreco } from "../components/PriceFilter";
 import { usePerfumes } from "../hooks/usePerfumes";
 
 const GOLD = "#b8912a";
@@ -14,19 +17,29 @@ const ocasiaoFilters = ["Todos", "Noite", "Dia", "Trabalho", "Encontro"];
 export default function PerfumesPage({ genero }) {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("Todos");
+  const [activeClima, setActiveClima] = useState(null);
+  const [activePreco, setActivePreco] = useState(0);
   const [selectedPerfume, setSelectedPerfume] = useState(null);
   const { masculinos, femininos, loading, error } = usePerfumes();
 
   const allItems = genero === "Masculinos" ? masculinos : femininos;
 
   const filtered = allItems.filter((item) => {
+    const q = search.toLowerCase();
     const matchSearch =
       search.trim() === "" ||
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.brand.toLowerCase().includes(search.toLowerCase());
+      item.name.toLowerCase().includes(q) ||
+      item.brand.toLowerCase().includes(q) ||
+      item.notes?.toLowerCase().includes(q);
     const matchFilter =
       activeFilter === "Todos" || item.tags.includes(activeFilter);
-    return matchSearch && matchFilter;
+    const matchClima = !activeClima || item.tags.includes(activeClima);
+    const { min, max } = precoFilters[activePreco];
+    const bestDupeBrand =
+      item.allDupes?.[0]?.brand || item.dupe?.split(" — ")[1] || "";
+    const matchPreco =
+      getPreco(bestDupeBrand) >= min && getPreco(bestDupeBrand) <= max;
+    return matchSearch && matchFilter && matchClima && matchPreco;
   });
 
   const path = genero === "Masculinos" ? "/masculinos" : "/femininos";
@@ -36,80 +49,95 @@ export default function PerfumesPage({ genero }) {
       : "Explore dupes de perfumes femininos com score de similaridade, pirâmide olfativa e preços médios de mercado.";
 
   return (
-    <div className="min-h-screen bg-white text-gray-900">
-      <SEO title={genero} description={desc} path={path} />
-      <Navbar />
+    <PageTransition>
+      <div className="min-h-screen bg-white dark:bg-[#0f0f0f] text-gray-900 dark:text-gray-100">
+        <SEO title={genero} description={desc} path={path} />
+        <Navbar />
 
-      <div className="px-6 sm:px-8 pt-12 pb-8 border-b border-gray-100">
-        <div className="flex items-center gap-2.5 mb-4">
-          <div className="w-6 h-px" style={{ background: GOLD }} />
-          <span
-            className="text-[10px] tracking-[0.28em] uppercase"
-            style={{ color: GOLD }}
-          >
-            Coleção completa
-          </span>
-        </div>
-        <h1
-          className="text-[36px] sm:text-[46px] font-light leading-[1.1]"
-          style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-        >
-          Perfumes <em style={{ color: GOLD }}>{genero.toLowerCase()}</em>
-        </h1>
-        <p className="text-sm font-light text-gray-400 mt-2">
-          {filtered.length} fragrâncias encontradas
-        </p>
-      </div>
-
-      <div className="px-4 sm:px-6 lg:px-8 pt-8">
-        <SearchBar value={search} onChange={setSearch} />
-        <Filters filters={ocasiaoFilters} onFilterChange={setActiveFilter} />
-
-        {loading && (
-          <div className="flex items-center gap-3 py-20 justify-center">
-            <div className="w-4 h-4 border border-gray-200 border-t-yellow-600 rounded-full animate-spin" />
-            <span className="text-[11px] tracking-[0.2em] uppercase text-gray-400">
-              Carregando fragrâncias...
+        <div className="px-6 sm:px-8 pt-12 pb-8 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center gap-2.5 mb-4">
+            <div className="w-6 h-px" style={{ background: GOLD }} />
+            <span
+              className="text-[10px] tracking-[0.28em] uppercase"
+              style={{ color: GOLD }}
+            >
+              Coleção completa
             </span>
           </div>
-        )}
+          <h1
+            className="text-[36px] sm:text-[46px] font-light leading-[1.1]"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
+            Perfumes <em style={{ color: GOLD }}>{genero.toLowerCase()}</em>
+          </h1>
+          <p className="text-sm font-light text-gray-400 mt-2">
+            {loading
+              ? "Carregando..."
+              : `${filtered.length} fragrâncias encontradas`}
+          </p>
+        </div>
 
-        {error && (
-          <div className="py-10 text-center">
-            <p className="text-[11px] tracking-[0.2em] uppercase text-red-400">
-              Erro ao carregar dados — {error}
-            </p>
-          </div>
-        )}
+        <div className="px-4 sm:px-6 lg:px-8 pt-8">
+          <SearchBar value={search} onChange={setSearch} />
+          <Filters
+            filters={ocasiaoFilters}
+            onFilterChange={setActiveFilter}
+            onClimaChange={setActiveClima}
+          />
+          <PriceFilter active={activePreco} onChange={setActivePreco} />
 
-        {!loading && !error && filtered.length === 0 && (
-          <div className="py-20 text-center">
-            <p className="text-[11px] tracking-[0.2em] uppercase text-gray-300">
-              Nenhum perfume encontrado
-            </p>
-          </div>
-        )}
+          {loading && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-10">
+              {Array.from({ length: 9 }).map((_, i) => (
+                <CardSkeleton key={i} />
+              ))}
+            </div>
+          )}
 
-        {!loading && !error && filtered.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-10">
-            {filtered.map((item) => (
-              <Card
-                key={`${item.brand}-${item.name}`}
-                item={item}
-                onClick={() => setSelectedPerfume(item)}
-              />
-            ))}
-          </div>
+          {error && (
+            <div className="py-10 text-center">
+              <p className="text-[11px] tracking-[0.2em] uppercase text-red-400">
+                Erro ao carregar dados — {error}
+              </p>
+            </div>
+          )}
+
+          {!loading && !error && filtered.length === 0 && (
+            <div className="py-20 text-center">
+              <p
+                className="text-[28px] font-light text-gray-200 mb-2"
+                style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+              >
+                Nenhum resultado
+              </p>
+              <p className="text-[11px] tracking-[0.2em] uppercase text-gray-300">
+                Tente outro nome, marca ou ajuste os filtros
+              </p>
+            </div>
+          )}
+
+          {!loading && !error && filtered.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-10">
+              {filtered.map((item, idx) => (
+                <Card
+                  key={`${item.brand}-${item.name}-${idx}`}
+                  item={item}
+                  index={idx}
+                  onClick={() => setSelectedPerfume(item)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {selectedPerfume && (
+          <PerfumeModal
+            item={selectedPerfume}
+            onClose={() => setSelectedPerfume(null)}
+          />
         )}
+        <Footer />
       </div>
-
-      {selectedPerfume && (
-        <PerfumeModal
-          item={selectedPerfume}
-          onClose={() => setSelectedPerfume(null)}
-        />
-      )}
-      <Footer />
-    </div>
+    </PageTransition>
   );
 }

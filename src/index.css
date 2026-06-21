@@ -1,29 +1,35 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap");
-
-.font-serif {
-  font-family: "Cormorant Garamond", serif;
-}
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@keyframes modalFade {
-  0% {
+@layer base {
+  body {
+    @apply bg-white dark:bg-[#0f0f0f] text-gray-900 dark:text-gray-100 transition-colors;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes modalSlideUp {
+  from {
     opacity: 0;
-    transform: translateY(20px) scale(0.96);
+    transform: translateY(20px);
   }
-  100% {
+  to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
-.animate-modal {
-  animation: modalFade 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes overlayFade {
+@keyframes overlayFadeIn {
   from {
     opacity: 0;
   }
@@ -32,6 +38,18 @@
   }
 }
 
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.animate-modal {
+  animation: modalSlideUp 0.2s ease-out;
+}
 .animate-overlay {
-  animation: overlayFade 0.3s ease forwards;
+  animation: overlayFadeIn 0.2s ease-out;
 }

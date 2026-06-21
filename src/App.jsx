@@ -9,6 +9,9 @@ import SobrePage from "./pages/SobrePage";
 import ContatoPage from "./pages/ContatoPage";
 import TermosPage from "./pages/TermosPage";
 import PrivacidadePage from "./pages/PrivacidadePage";
+import FavoritesPage from "./pages/FavoritesPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import SimilaresPage from "./pages/SimilaresPage";
 
 function App() {
   return (
@@ -27,10 +30,13 @@ function App() {
         <Route path="/ranking" element={<RankingPage />} />
         <Route path="/guia" element={<GuiaPage />} />
         <Route path="/busca" element={<BuscaPage />} />
+        <Route path="/favoritos" element={<FavoritesPage />} />
         <Route path="/sobre" element={<SobrePage />} />
         <Route path="/contato" element={<ContatoPage />} />
         <Route path="/termos" element={<TermosPage />} />
         <Route path="/privacidade" element={<PrivacidadePage />} />
+        <Route path="*" element={<NotFoundPage />} />
+        <Route path="/similares" element={<SimilaresPage />} />
       </Routes>
     </BrowserRouter>
   );

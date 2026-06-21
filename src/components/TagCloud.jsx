@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 
 const families = [
   {
@@ -112,34 +113,6 @@ const families = [
         <ellipse cx="8" cy="11.5" rx="1.5" ry="2.2" />
         <ellipse cx="4.5" cy="8" rx="2.2" ry="1.5" />
         <ellipse cx="11.5" cy="8" rx="2.2" ry="1.5" />
-        <ellipse
-          cx="5.5"
-          cy="5.5"
-          rx="1.5"
-          ry="2.2"
-          transform="rotate(45 5.5 5.5)"
-        />
-        <ellipse
-          cx="10.5"
-          cy="10.5"
-          rx="1.5"
-          ry="2.2"
-          transform="rotate(45 10.5 10.5)"
-        />
-        <ellipse
-          cx="10.5"
-          cy="5.5"
-          rx="1.5"
-          ry="2.2"
-          transform="rotate(-45 10.5 5.5)"
-        />
-        <ellipse
-          cx="5.5"
-          cy="10.5"
-          rx="1.5"
-          ry="2.2"
-          transform="rotate(-45 5.5 10.5)"
-        />
       </svg>
     ),
   },
@@ -174,7 +147,6 @@ const families = [
         <path d="M8 2 L8 5" />
         <path d="M8 5 C6 5 4.5 6.5 4.5 8.5 C4.5 11 6 13 8 14 C10 13 11.5 11 11.5 8.5 C11.5 6.5 10 5 8 5" />
         <path d="M6 8 C6.5 7.5 7 7.5 8 8 C9 8.5 9.5 8.5 10 8" />
-        <path d="M5.5 10 C6 9.5 7 9.5 8 10 C9 10.5 10 10.5 10.5 10" />
         <path d="M7 2 L9 2" />
       </svg>
     ),
@@ -261,6 +233,12 @@ const families = [
 
 export default function TagCloud() {
   const navigate = useNavigate();
+  const { dark } = useTheme();
+
+  const borderInactive = dark ? "#2a2a2a" : "#f3f4f6";
+  const colorInactive = dark ? "#6b7280" : "#9ca3af";
+  const borderHover = "#b8912a";
+  const colorHover = "#b8912a";
 
   const handleClick = (query) => {
     navigate(`/busca?familia=${encodeURIComponent(query)}`);
@@ -276,7 +254,19 @@ export default function TagCloud() {
           <button
             key={fam.label}
             onClick={() => handleClick(fam.query)}
-            className="group inline-flex items-center gap-2 px-3.5 py-2 border border-gray-100 text-[10px] tracking-[0.18em] uppercase text-gray-400 hover:border-yellow-700 hover:text-yellow-700 transition-colors bg-transparent"
+            className="inline-flex items-center gap-2 px-3.5 py-2 text-[10px] tracking-[0.18em] uppercase bg-transparent transition-colors"
+            style={{
+              border: `1px solid ${borderInactive}`,
+              color: colorInactive,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = borderHover;
+              e.currentTarget.style.color = colorHover;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = borderInactive;
+              e.currentTarget.style.color = colorInactive;
+            }}
           >
             <span className="w-4 h-4 flex-shrink-0 flex items-center justify-center">
               {fam.icon}
