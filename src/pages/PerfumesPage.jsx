@@ -9,7 +9,9 @@ import CardSkeleton from "../components/CardSkeleton";
 import SEO from "../components/SEO";
 import PageTransition from "../components/PageTransition";
 import PriceFilter, { precoFilters, getPreco } from "../components/PriceFilter";
+import SortSelect from "../components/SortSelect";
 import { usePerfumes } from "../hooks/usePerfumes";
+import { useSorted } from "../hooks/useSort";
 
 const GOLD = "#b8912a";
 const ocasiaoFilters = ["Todos", "Noite", "Dia", "Trabalho", "Encontro"];
@@ -19,6 +21,7 @@ export default function PerfumesPage({ genero }) {
   const [activeFilter, setActiveFilter] = useState("Todos");
   const [activeClima, setActiveClima] = useState(null);
   const [activePreco, setActivePreco] = useState(0);
+  const [sortKey, setSortKey] = useState("score");
   const [selectedPerfume, setSelectedPerfume] = useState(null);
   const { masculinos, femininos, loading, error } = usePerfumes();
 
@@ -41,6 +44,8 @@ export default function PerfumesPage({ genero }) {
       getPreco(bestDupeBrand) >= min && getPreco(bestDupeBrand) <= max;
     return matchSearch && matchFilter && matchClima && matchPreco;
   });
+
+  const sorted = useSorted(filtered, sortKey);
 
   const path = genero === "Masculinos" ? "/masculinos" : "/femininos";
   const desc =
@@ -70,11 +75,14 @@ export default function PerfumesPage({ genero }) {
           >
             Perfumes <em style={{ color: GOLD }}>{genero.toLowerCase()}</em>
           </h1>
-          <p className="text-sm font-light text-gray-400 mt-2">
-            {loading
-              ? "Carregando..."
-              : `${filtered.length} fragrâncias encontradas`}
-          </p>
+          <div className="flex items-center justify-between mt-2">
+            <p className="text-sm font-light text-gray-400">
+              {loading
+                ? "Carregando..."
+                : `${sorted.length} fragrâncias encontradas`}
+            </p>
+            {!loading && <SortSelect value={sortKey} onChange={setSortKey} />}
+          </div>
         </div>
 
         <div className="px-4 sm:px-6 lg:px-8 pt-8">
@@ -102,7 +110,7 @@ export default function PerfumesPage({ genero }) {
             </div>
           )}
 
-          {!loading && !error && filtered.length === 0 && (
+          {!loading && !error && sorted.length === 0 && (
             <div className="py-20 text-center">
               <p
                 className="text-[28px] font-light text-gray-200 mb-2"
@@ -116,9 +124,9 @@ export default function PerfumesPage({ genero }) {
             </div>
           )}
 
-          {!loading && !error && filtered.length > 0 && (
+          {!loading && !error && sorted.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-10">
-              {filtered.map((item, idx) => (
+              {sorted.map((item, idx) => (
                 <Card
                   key={`${item.brand}-${item.name}-${idx}`}
                   item={item}

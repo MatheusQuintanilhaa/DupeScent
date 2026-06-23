@@ -3,7 +3,6 @@ import SEO from "../components/SEO";
 import { usePerfumes, useFilteredPerfumes } from "../hooks/usePerfumes";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
-import Stats from "../components/Stats";
 import SearchBar from "../components/SearchBar";
 import Filters from "../components/Filters";
 import PerfumeGrid from "../components/PerfumeGrid";
@@ -37,7 +36,6 @@ export default function Home() {
         />
         <Navbar />
         <Hero />
-        <Stats />
 
         <div className="px-4 sm:px-6 lg:px-8 pt-10">
           <SearchBar value={search} onChange={setSearch} />

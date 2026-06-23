@@ -10,7 +10,9 @@ import CardSkeleton from "../components/CardSkeleton";
 import SEO from "../components/SEO";
 import PageTransition from "../components/PageTransition";
 import PriceFilter, { precoFilters, getPreco } from "../components/PriceFilter";
+import SortSelect from "../components/SortSelect";
 import { usePerfumes } from "../hooks/usePerfumes";
+import { useSorted } from "../hooks/useSort";
 
 const GOLD = "#b8912a";
 const ocasiaoFilters = ["Todos", "Noite", "Dia", "Trabalho", "Encontro"];
@@ -49,6 +51,7 @@ export default function BuscaPage() {
   const [activeFilter, setActiveFilter] = useState("Todos");
   const [activeClima, setActiveClima] = useState(null);
   const [activePreco, setActivePreco] = useState(0);
+  const [sortKey, setSortKey] = useState("score");
   const [selectedPerfume, setSelectedPerfume] = useState(null);
   const { masculinos, femininos, loading, error } = usePerfumes();
 
@@ -75,8 +78,8 @@ export default function BuscaPage() {
       return matchSearch && matchFilter && matchClima && matchPreco;
     });
 
-  const mascFiltrados = applyFilters(masculinos);
-  const femFiltrados = applyFilters(femininos);
+  const mascFiltrados = useSorted(applyFilters(masculinos), sortKey);
+  const femFiltrados = useSorted(applyFilters(femininos), sortKey);
   const total = mascFiltrados.length + femFiltrados.length;
 
   return (
@@ -122,9 +125,12 @@ export default function BuscaPage() {
               </>
             )}
           </h1>
-          <p className="text-sm font-light text-gray-400">
-            {loading ? "Carregando..." : `${total} fragrâncias encontradas`}
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-light text-gray-400">
+              {loading ? "Carregando..." : `${total} fragrâncias encontradas`}
+            </p>
+            {!loading && <SortSelect value={sortKey} onChange={setSortKey} />}
+          </div>
         </div>
 
         <div className="px-4 sm:px-6 lg:px-8 pt-8">

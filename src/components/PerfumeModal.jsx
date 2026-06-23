@@ -6,7 +6,9 @@ import { IconShare } from "@tabler/icons-react";
 
 const GOLD = "#b8912a";
 
+// Preços médios por marca de dupe
 const precoMedio = {
+  // Árabes
   Armaf: 320,
   "Al Haramain": 250,
   Lattafa: 260,
@@ -18,12 +20,25 @@ const precoMedio = {
   Rasasi: 260,
   Ajmal: 230,
   "Ard Al Zaafaran": 180,
+  Khayaan: 200,
+  // Internacionais acessíveis
   Dossier: 130,
   Zara: 100,
   "Franck Olivier": 160,
+  Davidoff: 280,
+  Abercrombie: 400,
+  Montblanc: 350,
+  // Nacionais
+  Nuancielo: 180,
+  "Thera Cosméticos": 110,
+  "O Boticário": 160,
+  Natura: 150,
+  Eudora: 120,
+  Mahogany: 130,
+  Parfun: 150,
 };
 
-// Preços médios dos perfumes ORIGINAIS no mercado brasileiro
+// Preços médios dos perfumes ORIGINAIS
 const precoOriginal = {
   Creed: 2000,
   "Tom Ford": 1100,
@@ -64,6 +79,18 @@ const precoOriginal = {
   "Hugo Boss": 350,
   "Narciso Rodriguez": 500,
   Chloé: 500,
+  Hermes: 700,
+};
+
+// Cores por tipo de dupe
+const tipoBadge = {
+  Árabe: { bg: "rgba(184,145,42,0.1)", color: "#b8912a", label: "Árabe" },
+  Nacional: { bg: "rgba(34,197,94,0.1)", color: "#16a34a", label: "Nacional" },
+  Internacional: {
+    bg: "rgba(99,102,241,0.1)",
+    color: "#6366f1",
+    label: "Internacional",
+  },
 };
 
 function getPrecoOriginal(brand) {
@@ -95,7 +122,7 @@ function ScoreBar({ score }) {
       >
         {parseFloat(score).toFixed(1)}
       </span>
-      <div className="flex-1 h-px bg-gray-100 relative">
+      <div className="flex-1 h-px bg-gray-100 dark:bg-gray-800 relative">
         <motion.div
           className="absolute top-0 left-0 h-px"
           initial={{ width: 0 }}
@@ -124,7 +151,7 @@ function RadarChart({ radar }) {
           <span className="text-[9px] tracking-[0.1em] uppercase text-gray-400 w-20 shrink-0">
             {label}
           </span>
-          <div className="flex-1 h-px bg-gray-100 relative">
+          <div className="flex-1 h-px bg-gray-100 dark:bg-gray-800 relative">
             <motion.div
               className="absolute top-0 left-0 h-px"
               initial={{ width: 0 }}
@@ -144,13 +171,23 @@ function RadarChart({ radar }) {
   );
 }
 
+function TipoBadge({ tipo }) {
+  const style = tipoBadge[tipo] || tipoBadge["Árabe"];
+  return (
+    <span
+      className="text-[8px] tracking-[0.15em] uppercase px-1.5 py-0.5 font-medium"
+      style={{ background: style.bg, color: style.color }}
+    >
+      {style.label}
+    </span>
+  );
+}
+
 export default function PerfumeModal({ item, onClose }) {
   const location = useLocation();
 
   const handleShare = () => {
-    const params = new URLSearchParams({
-      q: item.name,
-    });
+    const params = new URLSearchParams({ q: item.name });
     const url = `${window.location.origin}/busca?${params.toString()}`;
     navigator.clipboard.writeText(url).then(() => {
       toast("🔗 Link copiado!", {
@@ -166,6 +203,7 @@ export default function PerfumeModal({ item, onClose }) {
       });
     });
   };
+
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape") onClose();
@@ -185,6 +223,7 @@ export default function PerfumeModal({ item, onClose }) {
       name: item.dupe?.split(" — ")[0],
       brand: item.dupe?.split(" — ")[1],
       score: item.score,
+      tipo: "Árabe",
     },
   ];
 
@@ -201,19 +240,20 @@ export default function PerfumeModal({ item, onClose }) {
         />
 
         <motion.div
-          className="relative bg-white dark:bg-[#1a1a1a] w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border-t sm:border border-gray-100 sm:mx-4"
+          className="relative bg-white dark:bg-[#1a1a1a] w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border-t sm:border border-gray-100 dark:border-[#2a2a2a] sm:mx-4"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 40 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
         >
+          {/* Header */}
           <div className="sticky top-0 bg-white dark:bg-[#1a1a1a] border-b border-gray-100 dark:border-gray-800 px-6 py-4 flex items-start justify-between z-10">
             <div>
               <p className="text-[9px] tracking-[0.28em] uppercase text-gray-500 mb-1">
                 {item.brand}
               </p>
               <h2
-                className="text-[22px] sm:text-[26px] font-light leading-tight"
+                className="text-[22px] sm:text-[26px] font-light leading-tight dark:text-gray-100"
                 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
               >
                 {item.name}
@@ -229,7 +269,7 @@ export default function PerfumeModal({ item, onClose }) {
                 <IconShare size={16} strokeWidth={1.5} />
               </button>
               <button
-                className="text-gray-300 hover:text-gray-600 transition-colors text-lg leading-none"
+                className="text-gray-300 hover:text-gray-600 dark:hover:text-gray-200 transition-colors text-lg leading-none"
                 onClick={onClose}
               >
                 ✕
@@ -238,12 +278,13 @@ export default function PerfumeModal({ item, onClose }) {
           </div>
 
           <div className="px-6 py-5 space-y-6">
+            {/* Tags e notas */}
             <div>
               <div className="flex flex-wrap gap-1.5 mb-3">
                 {item.tags.map((t) => (
                   <span
                     key={t}
-                    className="text-[9px] tracking-[0.12em] uppercase px-2 py-1 border border-gray-100 text-gray-400"
+                    className="text-[9px] tracking-[0.12em] uppercase px-2 py-1 border border-gray-100 dark:border-[#2a2a2a] text-gray-400"
                   >
                     {t}
                   </span>
@@ -252,6 +293,7 @@ export default function PerfumeModal({ item, onClose }) {
               <p className="text-[12px] italic text-gray-500">{item.notes}</p>
             </div>
 
+            {/* Pirâmide */}
             {item.piramide && (
               <div>
                 <div className="flex items-baseline justify-between mb-3">
@@ -305,7 +347,7 @@ export default function PerfumeModal({ item, onClose }) {
                               · {sub}
                             </span>
                           </div>
-                          <span className="text-[12px] text-gray-700">
+                          <span className="text-[12px] text-gray-700 dark:text-gray-300">
                             {value}
                           </span>
                         </div>
@@ -315,6 +357,7 @@ export default function PerfumeModal({ item, onClose }) {
               </div>
             )}
 
+            {/* Radar */}
             {item.radar && (
               <div>
                 <p className="text-[9px] tracking-[0.25em] uppercase text-gray-500 mb-3">
@@ -324,14 +367,16 @@ export default function PerfumeModal({ item, onClose }) {
               </div>
             )}
 
+            {/* Divisor */}
             <div className="flex items-center gap-3">
-              <div className="flex-1 h-px bg-gray-100" />
+              <div className="flex-1 h-px bg-gray-100 dark:bg-gray-800" />
               <span className="text-[9px] tracking-[0.25em] uppercase text-gray-400">
                 Melhores dupes
               </span>
-              <div className="flex-1 h-px bg-gray-100" />
+              <div className="flex-1 h-px bg-gray-100 dark:bg-gray-800" />
             </div>
 
+            {/* Dupes */}
             <div className="space-y-4">
               {dupes.map((dupe, i) => {
                 const preco = getPreco(dupe.brand);
@@ -345,11 +390,14 @@ export default function PerfumeModal({ item, onClose }) {
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <p className="text-[9px] tracking-[0.2em] uppercase text-gray-500 mb-0.5">
-                          {dupe.brand}
-                        </p>
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <p className="text-[9px] tracking-[0.2em] uppercase text-gray-500">
+                            {dupe.brand}
+                          </p>
+                          {dupe.tipo && <TipoBadge tipo={dupe.tipo} />}
+                        </div>
                         <p
-                          className="text-[17px] font-light"
+                          className="text-[17px] font-light dark:text-gray-100"
                           style={{
                             fontFamily: "'Cormorant Garamond', Georgia, serif",
                           }}
@@ -448,7 +496,7 @@ export default function PerfumeModal({ item, onClose }) {
               );
             })()}
 
-            <p className="text-[10px] text-gray-400 leading-relaxed border-t border-gray-100 pt-4">
+            <p className="text-[10px] text-gray-400 leading-relaxed border-t border-gray-100 dark:border-[#2a2a2a] pt-4">
               * Os preços são médias baseadas no mercado brasileiro e podem
               variar conforme o vendedor, promoções e região.
             </p>
