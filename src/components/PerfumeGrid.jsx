@@ -1,19 +1,7 @@
-import Card from "./Card";
 import { useNavigate } from "react-router-dom";
+import Card from "./Card";
 
 const GOLD = "#b8912a";
-
-function Separator({ label }) {
-  return (
-    <div className="flex items-center gap-3.5 mb-10">
-      <div className="flex-1 h-px bg-gray-100" />
-      <span className="text-[9px] tracking-[0.3em] uppercase text-gray-400">
-        {label}
-      </span>
-      <div className="flex-1 h-px bg-gray-100" />
-    </div>
-  );
-}
 
 export default function PerfumeGrid({
   sections = [],
@@ -21,66 +9,119 @@ export default function PerfumeGrid({
   search = "",
 }) {
   const navigate = useNavigate();
-  const hasResults = sections.some((s) => s.items.length > 0);
+  const hasResults = sections.some((section) => section.items.length > 0);
 
   return (
     <div>
       {!hasResults && (
         <div className="py-16 text-center">
           <p
-            className="text-[28px] font-light text-gray-200 mb-2"
+            className="mb-2 text-[28px] font-light text-gray-200"
             style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
           >
             Nenhum resultado
           </p>
-          {search.trim() ? (
-            <p className="text-[11px] tracking-[0.15em] uppercase text-gray-300 mb-4">
-              Nenhum perfume encontrado para "{search}"
-            </p>
-          ) : (
-            <p className="text-[11px] tracking-[0.15em] uppercase text-gray-300 mb-4">
-              Tente outro filtro ou termo de busca
-            </p>
-          )}
+          <p className="mb-4 text-[11px] uppercase tracking-[0.15em] text-gray-300">
+            {search.trim()
+              ? `Nenhum perfume encontrado para "${search}"`
+              : "Tente outro filtro ou termo de busca"}
+          </p>
           <button
             onClick={() => navigate("/masculinos")}
-            className="text-[10px] tracking-[0.2em] uppercase border-b pb-px transition-colors"
+            className="border-b pb-px text-[10px] uppercase tracking-[0.2em] transition-colors"
             style={{ color: GOLD, borderColor: GOLD }}
           >
-            Ver todos os masculinos ↗
+            Ver todos os masculinos
           </button>
         </div>
       )}
-      {sections.map((section, i) => (
-        <div key={section.label}>
-          {i > 0 && <Separator label={section.label} />}
-          <div className="flex items-baseline justify-between mb-6">
-            <h2
-              className="text-[26px] font-light"
-              style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-            >
-              Em destaque —{" "}
-              <em style={{ color: GOLD }}>{section.label.toLowerCase()}</em>
-            </h2>
-            <button
-              className="text-[10px] tracking-[0.2em] uppercase text-gray-500 border-b border-gray-300 pb-px hover:text-yellow-700 hover:border-yellow-700 transition-colors"
-              onClick={() => navigate(`/${section.label.toLowerCase()}`)}
-            >
-              Ver todos ↗
-            </button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-10">
-            {section.items.map((item, idx) => (
-              <Card
-                key={item.name}
-                item={item}
-                index={idx}
-                onClick={() => onCardClick?.(item)}
-              />
-            ))}
-          </div>
+
+      {hasResults && (
+        <div className="border-b border-gray-100 dark:border-gray-800">
+          {sections.length >= 2 ? (
+            /* Layout lado a lado: cada seção ocupa metade, 4 cards em 1 linha */
+            <div className="grid lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-100 dark:divide-gray-800">
+              {sections.map((section) => (
+                <div key={section.label} className="px-4 py-8 sm:px-6 lg:px-8">
+                  <div className="mb-6 flex items-baseline justify-between">
+                    <h2
+                      className="text-[26px] font-light"
+                      style={{
+                        fontFamily: "'Cormorant Garamond', Georgia, serif",
+                      }}
+                    >
+                      Em destaque{" "}
+                      <em style={{ color: GOLD }}>
+                        {section.label.toLowerCase()}
+                      </em>
+                    </h2>
+                    <button
+                      className="flex items-center gap-1 text-[10px] uppercase tracking-[0.2em] text-gray-500 transition-colors hover:text-yellow-700"
+                      onClick={() =>
+                        navigate(`/${section.label.toLowerCase()}`)
+                      }
+                    >
+                      Ver todos →
+                    </button>
+                  </div>
+                  {/* 4 cards em linha única */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 items-stretch">
+                    {section.items.slice(0, 4).map((item, index) => (
+                      <Card
+                        key={item.name}
+                        item={item}
+                        index={index}
+                        rank={index + 1}
+                        onClick={() => onCardClick?.(item)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            /* Layout full width: 1 seção, 4 cards em linha */
+            <div className="px-4 py-8 sm:px-6 lg:px-8">
+              {sections.map((section) => (
+                <div key={section.label}>
+                  <div className="mb-6 flex items-baseline justify-between">
+                    <h2
+                      className="text-[26px] font-light"
+                      style={{
+                        fontFamily: "'Cormorant Garamond', Georgia, serif",
+                      }}
+                    >
+                      Em destaque{" "}
+                      <em style={{ color: GOLD }}>
+                        {section.label.toLowerCase()}
+                      </em>
+                    </h2>
+                    <button
+                      className="flex items-center gap-1 text-[10px] uppercase tracking-[0.2em] text-gray-500 transition-colors hover:text-yellow-700"
+                      onClick={() =>
+                        navigate(`/${section.label.toLowerCase()}`)
+                      }
+                    >
+                      Ver todos →
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 items-stretch">
+                    {section.items.slice(0, 4).map((item, index) => (
+                      <Card
+                        key={item.name}
+                        item={item}
+                        index={index}
+                        rank={index + 1}
+                        onClick={() => onCardClick?.(item)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      ))}
+      )}
     </div>
   );
 }

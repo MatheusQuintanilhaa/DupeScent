@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const GOLD = "#b8912a";
 
@@ -9,34 +9,36 @@ export default function SearchBar({ value, onChange }) {
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
-      return;
+      return undefined;
     }
-    const timer = setTimeout(() => {
-      onChange(local);
-    }, 300);
+    const timer = setTimeout(() => onChange(local), 300);
     return () => clearTimeout(timer);
-  }, [local]);
+  }, [local, onChange]);
 
   return (
-    <div className="mb-10">
-      <p className="text-[10px] tracking-[0.25em] uppercase text-gray-500 mb-2.5">
+    <div>
+      <p className="mb-2.5 text-[10px] uppercase tracking-[0.25em] text-gray-500">
         Buscar perfume original
       </p>
-      <div className="flex border border-gray-200 dark:border-gray-700 focus-within:border-yellow-600 dark:bg-[#1a1a1a] transition-colors">
+      <div className="flex border border-gray-200 transition-colors focus-within:border-yellow-600 dark:border-gray-700 dark:bg-[#1a1a1a]">
         <input
-          className="flex-1 bg-transparent border-none outline-none px-4 py-3.5 text-[13px] text-gray-900 dark:text-gray-100 placeholder-gray-300 dark:placeholder-gray-600 tracking-wide"
-          placeholder="Ex: Aventus, Baccarat Rouge 540, Good Girl…"
+          className="flex-1 border-none bg-transparent px-4 py-3.5 text-[13px] tracking-wide text-gray-900 outline-none placeholder:text-gray-300 dark:text-gray-100 dark:placeholder:text-gray-600"
+          placeholder="Ex: Aventus, Baccarat Rouge 540, Sauvage Elixir..."
           value={local}
-          onChange={(e) => setLocal(e.target.value)}
+          onChange={(event) => setLocal(event.target.value)}
         />
         <button
-          className="px-5 py-3.5 text-[10px] tracking-[0.18em] uppercase font-medium text-white transition-colors"
+          className="px-6 py-3.5 text-[10px] font-medium uppercase tracking-[0.18em] text-white transition-colors"
           style={{ background: GOLD }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "#a07c22")}
-          onMouseLeave={(e) => (e.currentTarget.style.background = GOLD)}
+          onMouseEnter={(event) =>
+            (event.currentTarget.style.background = "#a07c22")
+          }
+          onMouseLeave={(event) =>
+            (event.currentTarget.style.background = GOLD)
+          }
           onClick={() => onChange(local)}
         >
-          Buscar ↗
+          Buscar
         </button>
       </div>
     </div>

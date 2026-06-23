@@ -1,61 +1,61 @@
+import {
+  IconChartRadar,
+  IconFilter,
+  IconFlask,
+  IconSparkles,
+} from "@tabler/icons-react";
+
 const GOLD = "#b8912a";
 
 const features = [
   {
-    n: "01",
+    Icon: IconSparkles,
     title: "Score de similaridade",
-    desc: "Nota de 1 a 10 em quanto o dupe se aproxima do original.",
+    desc: "Notas de 1 a 10 em quanto o dupe se aproxima do original.",
   },
   {
-    n: "02",
-    title: "Pirâmide olfativa",
-    desc: "Notas de topo, coração e fundo detalhadas para cada fragrância.",
+    Icon: IconFlask,
+    title: "Piramide olfativa",
+    desc: "Notas de topo, coracao e fundo detalhadas para cada fragrancia.",
   },
   {
-    n: "03",
+    Icon: IconChartRadar,
     title: "Radar olfativo",
-    desc: "Perfil visual em doce, cítrico, amadeirado, especiado e fresco.",
+    desc: "Perfil visual em doce, citrico, amadeirado, especiado e fresco.",
   },
   {
-    n: "04",
-    title: "Filtro por ocasião",
-    desc: "Noite, dia, trabalho ou encontro — o dupe certo para cada momento.",
+    Icon: IconFilter,
+    title: "Filtro por ocasiao",
+    desc: "Noite, dia, trabalho ou encontro: o dupe certo para cada momento.",
   },
 ];
 
 export default function Features() {
   return (
-    <div id="features">
-      <div className="flex items-center gap-3.5 mb-10">
-        <div className="flex-1 h-px bg-gray-100 dark:bg-gray-800" />
-        <span className="text-[9px] tracking-[0.3em] uppercase text-gray-400">
-          Por que usar
-        </span>
-        <div className="flex-1 h-px bg-gray-100 dark:bg-gray-800" />
-      </div>
+    <section id="features" className="border-t border-gray-100 py-10 dark:border-gray-800">
+      <h2
+        className="mb-9 text-[26px] font-light text-gray-900 dark:text-gray-100"
+        style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+      >
+        Por que usar o DupeScent?
+      </h2>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
-        {features.map((feat) => (
-          <div
-            key={feat.n}
-            className="p-5 border border-gray-100 dark:border-[#2a2a2a]"
-          >
+      <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 lg:grid-cols-4">
+        {features.map(({ Icon, title, desc }) => (
+          <div key={title} className="mx-auto max-w-[210px]">
             <div
-              className="text-[28px] font-light mb-1.5 leading-none"
-              style={{
-                color: "rgba(184, 145, 42, 0.4)",
-                fontFamily: "'Cormorant Garamond', Georgia, serif",
-              }}
+              className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border"
+              style={{ borderColor: `${GOLD}55`, color: GOLD }}
             >
-              {feat.n}
+              <Icon size={24} strokeWidth={1.3} />
             </div>
-            <p className="text-[10px] tracking-[0.15em] uppercase text-gray-800 dark:text-gray-200 mb-1.5">
-              {feat.title}
+            <p className="mb-2 text-[13px] font-medium text-gray-700 dark:text-gray-200">
+              {title}
             </p>
-            <p className="text-xs leading-relaxed text-gray-500">{feat.desc}</p>
+            <p className="text-[12px] leading-relaxed text-gray-500">{desc}</p>
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 }

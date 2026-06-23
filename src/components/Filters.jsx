@@ -1,143 +1,103 @@
 import { useState } from "react";
 import {
-  IconGridDots,
-  IconGenderMale,
-  IconGenderFemale,
-  IconMoon,
-  IconSun,
   IconBriefcase,
-  IconHeart,
-  IconSnowflake,
+  IconChevronDown,
   IconFlame,
+  IconGenderFemale,
+  IconGenderMale,
+  IconGridDots,
+  IconHeart,
+  IconMoon,
+  IconSnowflake,
+  IconSun,
   IconWind,
 } from "@tabler/icons-react";
 import { useTheme } from "../context/ThemeContext";
 
 const GOLD = "#b8912a";
 
-const iconMap = {
-  Todos: IconGridDots,
-  Masculinos: IconGenderMale,
-  Femininos: IconGenderFemale,
-  Noite: IconMoon,
-  Dia: IconSun,
-  Trabalho: IconBriefcase,
-  Encontro: IconHeart,
-  Frio: IconSnowflake,
-  Quente: IconFlame,
-  Versátil: IconWind,
-};
-
-const defaultFilters = [
-  "Todos",
-  "Masculinos",
-  "Femininos",
-  "Noite",
-  "Dia",
-  "Trabalho",
-  "Encontro",
+const filters = [
+  ["Todos", IconGridDots],
+  ["Masculinos", IconGenderMale],
+  ["Femininos", IconGenderFemale],
+  ["Noite", IconMoon],
+  ["Dia", IconSun],
+  ["Trabalho", IconBriefcase],
+  ["Encontro", IconHeart],
 ];
 
-const climaFilters = ["Frio", "Quente", "Versátil"];
+const climateFilters = [
+  ["Frio", IconSnowflake],
+  ["Quente", IconFlame],
+  ["Versátil", IconWind],
+];
 
-export default function Filters({
-  onFilterChange,
-  onClimaChange,
-  filters = defaultFilters,
-  showClima = false,
-}) {
+export default function Filters({ onFilterChange, onClimaChange }) {
   const [active, setActive] = useState("Todos");
-  const [activeClima, setActiveClima] = useState(null);
+  const [activeClimate, setActiveClimate] = useState(null);
   const { dark } = useTheme();
 
-  const borderInactive = dark ? "#2a2a2a" : "#e5e7eb";
-  const colorInactive = dark ? "#6b7280" : "#6b7280";
-  const colorHover = dark ? "#d1d5db" : "#374151";
+  const inactiveBorder = dark ? "#2a2a2a" : "#e5e7eb";
+  const inactiveColor = dark ? "#9ca3af" : "#6b7280";
 
-  const handleSelect = (f) => {
-    setActive(f);
-    onFilterChange?.(f);
+  const selectFilter = (filter) => {
+    setActive(filter);
+    onFilterChange?.(filter);
   };
 
-  const handleClima = (f) => {
-    const next = activeClima === f ? null : f;
-    setActiveClima(next);
+  const selectClimate = (filter) => {
+    const next = activeClimate === filter ? null : filter;
+    setActiveClimate(next);
     onClimaChange?.(next);
   };
 
+  const buttonStyle = (isActive) => ({
+    borderColor: isActive ? GOLD : inactiveBorder,
+    color: isActive ? GOLD : inactiveColor,
+    background: isActive ? "rgba(184,145,42,0.05)" : "transparent",
+  });
+
   return (
     <div>
-      {/* Filtro de ocasião */}
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-3 scrollbar-hide">
-        {filters.map((f) => {
-          const Icon = iconMap[f];
-          const isActive = active === f;
+      <div className="mb-3 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        {filters.map(([label, Icon]) => {
+          const isActive = active === label;
           return (
             <button
-              key={f}
-              onClick={() => handleSelect(f)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-[10px] tracking-[0.15em] uppercase border whitespace-nowrap transition-colors"
-              style={{
-                borderColor: isActive ? GOLD : borderInactive,
-                color: isActive ? GOLD : colorInactive,
-                background: isActive ? "rgba(184,145,42,0.05)" : "transparent",
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.borderColor = "#b8912a55";
-                  e.currentTarget.style.color = colorHover;
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.borderColor = borderInactive;
-                  e.currentTarget.style.color = colorInactive;
-                }
-              }}
+              key={label}
+              onClick={() => selectFilter(label)}
+              className="inline-flex items-center gap-1.5 whitespace-nowrap border px-4 py-2 text-[10px] uppercase tracking-[0.15em] transition-colors"
+              style={buttonStyle(isActive)}
             >
-              {Icon && <Icon size={13} strokeWidth={1.5} aria-hidden="true" />}
-              {f}
+              <Icon size={13} strokeWidth={1.5} aria-hidden="true" />
+              {label}
             </button>
           );
         })}
       </div>
 
-      {/* Filtro de clima */}
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-10 scrollbar-hide">
-        {climaFilters.map((f) => {
-          const Icon = iconMap[f];
-          const isActive = activeClima === f;
+      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        {climateFilters.map(([label, Icon]) => {
+          const isActive = activeClimate === label;
           return (
             <button
-              key={f}
-              onClick={() => handleClima(f)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-[10px] tracking-[0.15em] uppercase border whitespace-nowrap transition-colors"
-              style={{
-                borderColor: isActive ? GOLD : borderInactive,
-                color: isActive ? GOLD : colorInactive,
-                background: isActive ? "rgba(184,145,42,0.05)" : "transparent",
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.borderColor = "#b8912a55";
-                  e.currentTarget.style.color = colorHover;
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.borderColor = borderInactive;
-                  e.currentTarget.style.color = colorInactive;
-                }
-              }}
+              key={label}
+              onClick={() => selectClimate(label)}
+              className="inline-flex items-center gap-1.5 whitespace-nowrap border px-4 py-2 text-[10px] uppercase tracking-[0.15em] transition-colors"
+              style={buttonStyle(isActive)}
             >
-              {Icon && <Icon size={13} strokeWidth={1.5} aria-hidden="true" />}
-              {f}
+              <Icon size={13} strokeWidth={1.5} aria-hidden="true" />
+              {label}
             </button>
           );
         })}
-        <span className="text-[9px] tracking-[0.1em] uppercase text-gray-400 self-center ml-2">
-          Clima
-        </span>
+        <button
+          className="inline-flex items-center gap-1.5 whitespace-nowrap border px-4 py-2 text-[10px] uppercase tracking-[0.15em] text-gray-500"
+          style={{ borderColor: inactiveBorder }}
+        >
+          Mais filtros
+          <IconChevronDown size={13} strokeWidth={1.5} aria-hidden="true" />
+        </button>
       </div>
     </div>
   );
